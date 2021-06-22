@@ -4,83 +4,74 @@ class UserController {
   async store(req, res) {
     try {
       const novoUser = await User.create(req.body);
-      return res.json(novoUser);
+
+      const { id, nome, email } = novoUser;
+
+      return res.json({ id, nome, email });
     } catch (error) {
       return res.status(400).json({
-        errors: error.errors.map(err => err.message),
+        errors: error.errors.map((err) => err.message),
       });
     }
   }
 
-  async index(req, res){
+  async index(req, res) {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({ attributes: ['id', 'nome', 'email'] });
       return res.json(users);
     } catch (error) {
       return res.json(null);
     }
   }
 
-  async show(req, res){
+  async show(req, res) {
     try {
-      const { id } = req.params;
-      const user = await User.findByPk(id);
-      return res.json(user);
+      const user = await User.findByPk(req.params.id);
+
+      const { id, nome, email } = user;
+
+      return res.json({ id, nome, email });
     } catch (error) {
       return res.json(null);
     }
   }
 
-  async update(req, res){
+  async update(req, res) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({
-          errors: ['Missing ID'],
-        });
-      }
-      
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userId);
 
-      if(!user) {
+      if (!user) {
         return res.status(400).json({
-          errors: ['User does not exist.']
+          errors: ['User does not exist.'],
         });
       }
 
       const novosDados = await user.update(req.body);
+      const { id, nome, email } = novosDados;
 
-      return res.json(novosDados);
+      return res.json({ id, nome, email });
     } catch (error) {
       return res.status(400).json({
-        errors: error.errors.map(err => err.message),
+        errors: error.errors.map((err) => err.message),
       });
     }
   }
 
-  async delete(req, res){
+  async delete(req, res) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({
-          errors: ['Missing ID'],
-        });
-      }
-      
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userId);
 
-      if(!user) {
+      if (!user) {
         return res.status(400).json({
-          errors: ['User does not exist.']
+          errors: ['User does not exist.'],
         });
       }
 
       await user.destroy();
-      return res.json(user);
-      
+      return res.json(null);
     } catch (error) {
       return res.status(400).json({
-        errors: error.errors.map(err => err.message),
+        errors: error.errors.map((err) => err.message),
       });
     }
   }
