@@ -15,8 +15,6 @@ import alunoRoutes from './src/routes/alunoRoutes';
 import imageRoutes from './src/routes/imageRoutes';
 
 const whiteList = [
-  'https://react1.otaviomiranda.com.br',
-  'https://react2.otaviomiranda.com.br',
   'http://localhost:3000',
 ];
 
